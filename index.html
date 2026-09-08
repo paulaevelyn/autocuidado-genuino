@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Que tipo de autocuidado você pratica? | Psicoterapia e Afins</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --coral: #D96C63;
+    --coral-light: #FBF2F0;
+    --verde: #5E7D73;
+    --verde-light: #EEF4F2;
+    --areia: #F5F0E8;
+    --grafite: #2E2E2E;
+    --muted: #6B6B67;
+    --border: #E2DDD5;
+    --amber: #8B6B3D;
+    --amber-light: #FDF7EE;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'Lato', Arial, sans-serif;
+  }
+
+  body {
+    background: var(--areia);
+    font-family: var(--sans);
+    color: var(--grafite);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .shell {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 36px;
+  }
+  .header-kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 12px;
+  }
+  .header-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--grafite);
+    margin-bottom: 14px;
+  }
+  .header-title em {
+    font-style: italic;
+    color: var(--verde);
+  }
+  .header-desc {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 520px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    margin-bottom: 32px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .progress-count {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--verde);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── QUESTION ── */
+  .question-block {
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .question-text {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--grafite);
+    margin-bottom: 24px;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+    text-align: left;
+    width: 100%;
+  }
+  .option:hover {
+    border-color: var(--verde);
+    background: var(--verde-light);
+  }
+  .option.selected {
+    border-color: var(--verde);
+    background: var(--verde-light);
+  }
+  .option-marker {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    margin-top: 1px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .option.selected .option-marker {
+    border-color: var(--verde);
+    background: var(--verde);
+  }
+  .option-marker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+    transition: opacity 0.18s;
+  }
+  .option.selected .option-marker-dot { opacity: 1; }
+  .option-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--grafite);
+  }
+
+  /* ── BUTTON ── */
+  .btn-next {
+    display: inline-block;
+    padding: 13px 32px;
+    background: var(--grafite);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, background 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .btn-next.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .btn-next:hover { background: var(--verde); }
+
+  /* ── RESULT ── */
+  .result-block {
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .result-block.visible { display: block; }
+
+  .result-profile {
+    padding: 32px 30px;
+    border-radius: 10px;
+    margin-bottom: 28px;
+  }
+  .result-profile.M { background: var(--coral-light); border-left: 4px solid var(--coral); }
+  .result-profile.P { background: var(--amber-light); border-left: 4px solid var(--amber); }
+  .result-profile.T { background: var(--areia); border-left: 4px solid var(--border); }
+  .result-profile.G { background: var(--verde-light); border-left: 4px solid var(--verde); }
+
+  .result-kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .result-profile.M .result-kicker { color: var(--coral); }
+  .result-profile.P .result-kicker { color: var(--amber); }
+  .result-profile.T .result-kicker { color: var(--muted); }
+  .result-profile.G .result-kicker { color: var(--verde); }
+
+  .result-name {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--grafite);
+    margin-bottom: 20px;
+  }
+
+  .result-body p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--grafite);
+    margin-bottom: 16px;
+  }
+  .result-body p:last-child { margin-bottom: 0; }
+  .result-body strong { font-weight: 700; }
+
+  .result-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 28px 0;
+  }
+
+  .result-nota {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+
+  .result-cta {
+    background: var(--grafite);
+    border-radius: 10px;
+    padding: 26px 28px;
+  }
+  .result-cta p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(245,240,232,0.88);
+    margin-bottom: 18px;
+  }
+  .result-cta a {
+    display: inline-block;
+    padding: 11px 26px;
+    background: var(--coral);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 999px;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+  .result-cta a:hover { background: #c45c53; }
+
+  .btn-restart {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: var(--sans);
+  }
+  .btn-restart:hover { color: var(--grafite); }
+
+  /* ── INTRO ── */
+  .intro-block { }
+  .intro-note {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-start {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 13px 32px;
+    background: var(--verde);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .btn-start:hover { background: #4e6b61; }
+
+  .result-refs {
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .result-refs-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .result-refs-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .result-refs-list li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+    padding-left: 14px;
+    border-left: 2px solid var(--border);
+  }
+  .result-refs-list li em {
+    font-style: italic;
+  }
+
+  @media (max-width: 480px) {
+    .shell { padding: 28px 18px 48px; }
+    .header-title { font-size: 24px; }
+    .question-text { font-size: 18px; }
+    .result-name { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER (sempre visível) -->
+  <div class="header">
+    <div class="header-kicker">Psicoterapia e Afins</div>
+    <h1 class="header-title">Que tipo de autocuidado<br>você <em>realmente</em> pratica?</h1>
+    <p class="header-desc">Não existe resposta certa. Existe uma leitura mais honesta do que está acontecendo no seu sistema nervoso quando você tenta se cuidar.</p>
+  </div>
+
+  <!-- INTRO -->
+  <div id="intro" class="intro-block">
+    <p style="font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:12px;">Este recurso tem 8 perguntas. Cada uma diz respeito a um aspecto diferente do autocuidado, não às práticas em si, mas ao estado que elas produzem no seu sistema nervoso.</p>
+    <p style="font-size:15px;line-height:1.8;color:var(--muted);">Escolha a opção que mais se aproxima do que acontece de verdade, não do que você acha que deveria acontecer.</p>
+    <p class="intro-note">Este recurso tem finalidade psicoeducativa e não substitui acompanhamento clínico.</p>
+    <button class="btn-start" onclick="startQuiz()">Começar</button>
+  </div>
+
+  <!-- PROGRESSO (oculto inicialmente) -->
+  <div class="progress-wrap" id="progress" style="display:none;">
+    <div class="progress-meta">
+      <span class="progress-label">Pergunta <span id="q-num">1</span> de 8</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- PERGUNTAS -->
+  <div id="quiz" style="display:none;"></div>
+
+  <!-- RESULTADO -->
+  <div id="result" class="result-block"></div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    text: "Quando você inicia uma prática de autocuidado, o que costuma estar por trás disso?",
+    options: [
+      { text: "Percebi que estou perto do limite e preciso recarregar para continuar funcionando.", profile: "M" },
+      { text: "Quero manter uma rotina consistente e sinto que devo fazer isso regularmente.", profile: "P" },
+      { text: "Sinto uma necessidade interna difícil de nomear, sem uma função clara além de estar comigo mesma.", profile: "G" },
+      { text: "Vejo outras pessoas fazendo e me lembro que deveria fazer também.", profile: "P" }
+    ]
+  },
+  {
+    text: "Durante uma prática de autocuidado, onde vai a maior parte da sua atenção?",
+    options: [
+      { text: "Para o que ainda precisa ser feito assim que eu terminar.", profile: "M" },
+      { text: "Para avaliar se estou fazendo certo, o suficiente, do jeito certo.", profile: "P" },
+      { text: "Oscila entre estar presente e pensar no que vem a seguir.", profile: "T" },
+      { text: "Para a experiência em si, pelo menos por um tempo.", profile: "G" }
+    ]
+  },
+  {
+    text: "Quando você interrompe uma rotina de cuidado por alguns dias, o que costuma aparecer?",
+    options: [
+      { text: "Queda de rendimento ou irritabilidade. Sinto que não estou operando bem.", profile: "M" },
+      { text: "Ansiedade ou sensação de estar ficando para trás em algo.", profile: "P" },
+      { text: "Culpa e intenção de compensar depois.", profile: "T" },
+      { text: "Percebo a falta, mas retomo quando é possível sem muito drama.", profile: "G" }
+    ]
+  },
+  {
+    text: "Se alguém te oferecesse um dia inteiro sem nenhuma agenda e sem nada para resolver, o que sentiria primeiro?",
+    options: [
+      { text: "Alívio e culpa ao mesmo tempo: parece bom, mas parece que deveria estar fazendo algo.", profile: "T" },
+      { text: "Desconforto. Fico inquieta sem estrutura ou objetivo.", profile: "P" },
+      { text: "Vontade genuína de aceitar, com alguma dificuldade de realmente soltar.", profile: "T" },
+      { text: "Abertura. Consigo estar presente num dia assim, mesmo que demore um pouco.", profile: "G" }
+    ]
+  },
+  {
+    text: "Depois de uma prática de autocuidado, o que você costuma sentir?",
+    options: [
+      { text: "Pronta para voltar ao que estava. A pausa cumpriu a função.", profile: "M" },
+      { text: "Satisfação de ter feito, ou frustração se sinto que não fiz suficiente.", profile: "P" },
+      { text: "Alívio momentâneo que logo dá lugar à próxima demanda.", profile: "M" },
+      { text: "Algo baixou. Não euforia, mais como espaço interno.", profile: "G" }
+    ]
+  },
+  {
+    text: "Quando tenta ser gentil consigo mesma em um momento difícil, o que costuma acontecer?",
+    options: [
+      { text: "Uma voz que diz que não é hora, que precisa resolver o problema primeiro.", profile: "M" },
+      { text: "Sensação de que gentileza consigo é fraqueza ou indulgência que não foi merecida.", profile: "P" },
+      { text: "Consigo às vezes, mas exige esforço. Não é o movimento natural.", profile: "T" },
+      { text: "Consigo com mais frequência quando estou em um estado mais regulado.", profile: "G" }
+    ]
+  },
+  {
+    text: "Quando escolhe parar, não por exaustão mas por decisão, como seu corpo costuma responder?",
+    options: [
+      { text: "Inquietação. É difícil ficar parada sem que algo me puxe de volta.", profile: "T" },
+      { text: "Tensão, como se parar fosse perigoso ou como se estivesse perdendo tempo.", profile: "M" },
+      { text: "Mistura de alívio e estranhamento, bom mas não completamente confortável.", profile: "T" },
+      { text: "O sistema demora, mas consegue pousar progressivamente.", profile: "G" }
+    ]
+  },
+  {
+    text: "Quando pensa em se cuidar sem que isso sirva a nenhuma função além de você mesma, o que aparece?",
+    options: [
+      { text: "Parece luxo que não posso me dar agora.", profile: "M" },
+      { text: "Sinto que mereço isso só quando tiver dado conta de tudo.", profile: "P" },
+      { text: "Parece possível em teoria, mas difícil de sustentar na prática.", profile: "T" },
+      { text: "Parece necessário e já consigo me aproximar disso em alguns momentos.", profile: "G" }
+    ]
+  }
+];
+
+const results = {
+  M: {
+    kicker: "Seu padrão predominante",
+    name: "Você se cuida para continuar funcionando",
+    color: "M",
+    body: `<p>O cuidado existe, mas a serviço de uma estrutura que nunca foi questionada. Você descansa para render mais, se trata para continuar disponível, recarrega para aguentar o que vem depois. A pausa tem função, e essa função é o que a justifica.</p>
+<p>Isso não é falta de intenção. É uma resposta lógica de um sistema nervoso que aprendeu, em algum momento, que parar tem custo. Que existir sem produzir é arriscado. Que o valor está no que se entrega, não no que se é.</p>
+<p><strong>O que isso mantém:</strong> adicionar mais práticas de autocuidado dentro dessa lógica tende a não resolver o esgotamento. Resolve temporariamente, porque o problema não é a quantidade de cuidado: o cuidado está sendo usado para sustentar algo que precisaria ser revisado, não sustentado.</p>
+<p>O ponto de entrada raramente é uma nova prática. É entender o que mantém o sistema em alerta e começar a construir, aos poucos, evidência interna de que parar não tem o custo que o sistema aprendeu a temer.</p>`
+  },
+  P: {
+    kicker: "Seu padrão predominante",
+    name: "O autocuidado virou mais um campo de desempenho",
+    color: "P",
+    body: `<p>O sistema de busca, aquele que move conquista, comparação e realização, colonizou o autocuidado. Você traz para o cuidado a mesma lógica que move tudo o mais: métricas, consistência, referências externas do que é suficiente. A prática existe, mas operando dentro do sistema errado.</p>
+<p>Isso não é um traço de caráter. É coerente. Quando um sistema passa anos sendo treinado pela lógica do desempenho, ele tende a aplicar essa lógica em todos os campos, inclusive nos que foram criados para contrariá-la.</p>
+<p><strong>O que isso mantém:</strong> o autocuidado de desempenho pode intensificar a autocrítica, não reduzi-la. "Não estou fazendo o suficiente" é uma frase clínica, não motivacional. Ela aparece mesmo quando a pessoa está fazendo muito.</p>
+<p>A pergunta que muda o eixo não é "o que devo fazer para me cuidar melhor", mas "o que o meu sistema está sentindo enquanto faço". A qualidade do estado durante a prática é o único critério que importa aqui.</p>`
+  },
+  T: {
+    kicker: "Seu padrão predominante",
+    name: "Você está entre dois estados",
+    color: "T",
+    body: `<p>Nem sempre manutenção, nem sempre genuíno. Dependendo do momento, do nível de demanda e do estado do sistema nervoso, o cuidado pode ser realmente restaurador, ou pode ser mais um item de gestão. Essa oscilação não é inconsistência. É dado.</p>
+<p>O que está acontecendo é que o sistema de alívio tem acesso: há momentos em que o sistema nervoso consegue realmente pousar. Mas esse acesso ainda não é estável o suficiente para se sustentar quando a demanda aumenta ou quando o sistema de ameaça está mais ativado.</p>
+<p><strong>O que isso indica:</strong> a capacidade para o cuidado genuíno está presente. O que ainda está sendo construído é a evidência interna de que ela pode ser confiável. Que parar é seguro não só quando as condições são ideais, mas como uma possibilidade real dentro da vida comum.</p>
+<p>Esse é um lugar de movimento, não de estagnação. E reconhecer a diferença entre os dois estados, quando o cuidado ativou alívio real e quando foi gestão, é o trabalho mais concreto que existe aqui.</p>`
+  },
+  G: {
+    kicker: "Seu padrão predominante",
+    name: "O seu sistema consegue pousar",
+    color: "G",
+    body: `<p>O sistema de alívio está acessível. Não de forma perfeita, não o tempo todo, mas há evidência interna suficiente de que parar pode ser seguro. O cuidado, em alguma frequência, produz o estado que promete: não euforia, não conquista, mas espaço.</p>
+<p>Isso não significa que o sistema de ameaça está silencioso, ou que a autocrítica não aparece. Significa que o sistema nervoso tem referência interna de que parar não ativa as consequências que o sistema aprendeu a temer. Essa referência foi construída com repetição, não com decisão.</p>
+<p><strong>O que merece atenção:</strong> esse acesso pode ser frágil em períodos de alta demanda, de sobrecarga relacional ou de ativação intensa do sistema de ameaça. Reconhecer quais condições sustentam esse estado, e o que tende a interrompê-lo, é o que permite que ele se torne mais consistente ao longo do tempo.</p>
+<p>O que você já tem é raro e foi construído. A pergunta que mantém é: o que permite que o sistema continue acreditando que parar é seguro?</p>`
+  }
+};
+
+let scores = { M: 0, P: 0, T: 0, G: 0 };
+let currentQ = 0;
+let selectedOption = null;
+
+function startQuiz() {
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('progress').style.display = 'block';
+  document.getElementById('quiz').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const fill = ((currentQ) / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = fill + '%';
+  document.getElementById('q-num').textContent = currentQ + 1;
+  selectedOption = null;
+
+  const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+
+  const html = `
+    <div class="question-block">
+      <p class="question-text">${q.text}</p>
+      <div class="options" id="options">
+        ${shuffled.map((opt, i) => `
+          <button class="option" onclick="selectOption(this, '${opt.profile}')" data-profile="${opt.profile}">
+            <div class="option-marker"><div class="option-marker-dot"></div></div>
+            <span class="option-text">${opt.text}</span>
+          </button>
+        `).join('')}
+      </div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+        ${currentQ < questions.length - 1 ? 'Continuar' : 'Ver resultado'}
+      </button>
+    </div>
+  `;
+  document.getElementById('quiz').innerHTML = html;
+}
+
+function selectOption(el, profile) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOption = profile;
+  document.getElementById('btn-next').classList.add('visible');
+}
+
+function nextQuestion() {
+  if (!selectedOption) return;
+  scores[selectedOption]++;
+  currentQ++;
+  if (currentQ < questions.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('quiz').style.display = 'none';
+
+  // determine winning profile
+  const order = ['M', 'P', 'T', 'G'];
+  let winner = order.reduce((a, b) => scores[a] >= scores[b] ? a : b);
+  // tiebreak: prefer M > P > T > G
+  const tied = order.filter(p => scores[p] === scores[winner]);
+  if (tied.length > 1) {
+    for (const p of ['M', 'P', 'T', 'G']) {
+      if (tied.includes(p)) { winner = p; break; }
+    }
+  }
+
+  const r = results[winner];
+  const resultEl = document.getElementById('result');
+  resultEl.innerHTML = `
+    <div class="result-profile ${r.color}">
+      <div class="result-kicker">${r.kicker}</div>
+      <div class="result-name">${r.name}</div>
+      <div class="result-body">${r.body}</div>
+    </div>
+    <p class="result-nota">Este resultado reflete um padrão predominante com base nas suas respostas. A maioria das pessoas oscila entre padrões dependendo do momento e das condições de vida. Se isso fez sentido e você quer aprofundar, o próximo passo pode ser uma conversa.</p>
+    <div class="result-cta">
+      <p>Se algo aqui fez sentido para o que você está vivendo e sente que chegou a hora de trabalhar isso com acompanhamento, fala comigo.</p>
+      <a href="https://wa.me/5581997153967" target="_blank">Conversar com Paula</a>
+    </div>
+    <div style="text-align:center;margin-top:20px;">
+      <button class="btn-restart" onclick="restartQuiz()">Refazer o recurso</button>
+    </div>
+    <div class="result-refs">
+      <div class="result-refs-title">Referências</div>
+      <ul class="result-refs-list">
+        <li>Gilbert, P., McEwan, K., Matos, M., &amp; Rivis, A. (2011). Fears of compassion: Development of three self-report measures. <em>Psychology and Psychotherapy: Theory, Research and Practice</em>, 84(3), 239–254.</li>
+        <li>Gilbert, P., Clarke, M., Hempel, S., Miles, J. N. V., &amp; Irons, C. (2004). Criticizing and reassuring oneself: An exploration of forms, styles and reasons in female students. <em>British Journal of Clinical Psychology</em>, 43(1), 31–50.</li>
+        <li>Gilbert, P. (2010). <em>Compassion Focused Therapy: Distinctive Features</em>. Routledge.</li>
+        <li>Porges, S. W. (2011). <em>The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation</em>. W. W. Norton.</li>
+        <li>Kolacz, J., &amp; Porges, S. W. (2018). Chronic diffuse pain and functional gastrointestinal disorders after traumatic stress: Pathophysiology through a polyvagal perspective. <em>Frontiers in Medicine</em>, 5, 145.</li>
+        <li>Deci, E. L., &amp; Ryan, R. M. (2000). The "what" and "why" of goal pursuits: Human needs and the self-determination of behavior. <em>Psychological Inquiry</em>, 11(4), 227–268.</li>
+        <li>Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. <em>Self and Identity</em>, 2(3), 223–250.</li>
+        <li>Ryan, R. M., &amp; Deci, E. L. (2017). <em>Self-Determination Theory: Basic Psychological Needs in Motivation, Development, and Wellness</em>. Guilford Press.</li>
+      </ul>
+    </div>
+  `;
+  resultEl.classList.add('visible');
+}
+
+function reportHeight() {
+  var h = document.body.scrollHeight;
+  window.parent.postMessage({ id: 'pea-quiz-autocuidado', height: h }, '*');
+}
+
+// Reporta altura ao carregar e sempre que o DOM mudar
+if (window.ResizeObserver) {
+  new ResizeObserver(reportHeight).observe(document.body);
+} else {
+  window.addEventListener('load', reportHeight);
+}
+
+function restartQuiz() {
+  scores = { M: 0, P: 0, T: 0, G: 0 };
+  currentQ = 0;
+  selectedOption = null;
+  document.getElementById('result').classList.remove('visible');
+  document.getElementById('result').innerHTML = '';
+  document.getElementById('quiz').style.display = 'block';
+  renderQuestion();
+}
+</script>
+</body>
+</html>
